@@ -1,349 +1,690 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <!-- 引入 Tailwind CSS (CDN版本，方便直接使用) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>ZLKam | Unity Developer</title>
+    
     <!-- 引入 FontAwesome 图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        brand: {
-                            dark: '#0f172a',
-                            accent: '#38bdf8', // 天蓝色
-                            secondary: '#818cf8' // 靛青色
-                        }
-                    },
-                    animation: {
-                        'blob': 'blob 7s infinite',
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-                    },
-                    keyframes: {
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
-                        },
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        body {
-            background-color: #0f172a;
-            color: #e2e8f0;
-            overflow-x: hidden;
-        }
-        /* 自定义滚动条 */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #38bdf8;
-        }
-        
-        /* 玻璃拟态效果类 */
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* 霓虹文字发光 */
-        .neon-text {
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        /* ====================
+           1. 基础设置 (Base)
+           ==================== */
+        :root {
+            --bg-color: #0f172a;       /* 深蓝背景 */
+            --text-color: #e2e8f0;     /* 浅灰文字 */
+            --accent-color: #38bdf8;   /* 亮青色 */
+            --secondary-color: #818cf8; /* 靛青色 */
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
         }
 
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* 防止水平滚动 */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a { text-decoration: none; color: inherit; transition: all 0.3s; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        button { border: none; background: none; cursor: pointer; color: inherit; }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+        /* ====================
+           2. 通用组件 (Components)
+           ==================== */
+        
+        /* 容器：控制内容最大宽度并居中 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 玻璃卡片效果 */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+
+        .btn-primary {
+            background: linear-gradient(to right, #0ea5e9, #2563eb);
+            color: white;
+            box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+        }
+
+        .btn-outline {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            color: var(--accent-color);
+        }
+        .btn-outline:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* 霓虹文字 */
+        .neon-text {
+            color: transparent;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        /* 辅助类 */
+        .hidden { display: none !important; }
+        .text-mono { font-family: 'JetBrains Mono', monospace; }
+        .flex-center { display: flex; align-items: center; justify-content: center; }
+        .text-center { text-align: center; }
+
+        /* 背景 Canvas */
         #canvas-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: -1;
-            pointer-events: none; /* 确保不影响点击 */
+            pointer-events: none;
+        }
+
+        /* ====================
+           3. 导航栏 (Navbar)
+           ==================== */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 桌面端菜单 */
+        .nav-links-desktop {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .nav-link {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .nav-link:hover { color: var(--accent-color); }
+
+        /* 语言下拉菜单 */
+        .lang-dropdown { position: relative; }
+        .lang-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 10px;
+            width: 120px;
+            background: #1e293b;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        .lang-option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+        .lang-option:hover {
+            background: rgba(56, 189, 248, 0.1);
+            color: white;
+        }
+
+        /* 移动端菜单按钮 */
+        .mobile-menu-btn { display: none; font-size: 20px; }
+        
+        /* 移动端菜单面板 */
+        .mobile-menu-panel {
+            position: fixed;
+            top: 70px; left: 0; right: 0;
+            background: #0f172a;
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .mobile-menu-panel a {
+            display: block;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        /* ====================
+           4. 页面各板块 (Sections)
+           ==================== */
+        
+        /* Hero Section (首页) */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding-top: 70px;
+        }
+        
+        .hero-badge {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #334155;
+            color: var(--accent-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .typewriter-container {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            height: 40px;
+            margin-bottom: 40px;
+            border-right: 2px solid var(--accent-color);
+            display: inline-block;
+            padding-right: 5px;
+            animation: blink 1s step-end infinite;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* About Section (关于) */
+        .about-section {
+            padding: 80px 0;
+            background: rgba(15, 23, 42, 0.5);
+        }
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+        .avatar-wrapper {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            justify-content: center;
+        }
+        .avatar-box {
+            width: 260px;
+            height: 260px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #334155;
+            transform: rotate(3deg);
+            transition: transform 0.3s;
+        }
+        .avatar-box:hover { transform: rotate(0deg) scale(1.05); }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .about-text { flex: 2; min-width: 300px; }
+        .section-title { font-size: 2rem; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .section-number { color: var(--accent-color); font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .skill-item { display: flex; align-items: center; gap: 8px; color: #94a3b8; font-size: 14px; }
+        .skill-item:hover { color: white; }
+
+        /* Projects Section (项目) */
+        .projects-section { padding: 80px 0; }
+        .placeholder-box {
+            padding: 60px 20px;
+            text-align: center;
+            border: 2px dashed #334155;
+            border-radius: 20px;
+            background: rgba(30, 41, 59, 0.3);
+        }
+        .working-icon { font-size: 40px; color: var(--accent-color); margin-bottom: 20px; }
+
+        /* Contact Section (联系) */
+        .contact-section { padding: 80px 0; text-align: center; }
+        .contact-links { display: flex; justify-content: center; gap: 20px; margin: 40px 0; flex-wrap: wrap; }
+        .social-icons { display: flex; justify-content: center; gap: 30px; font-size: 24px; color: #94a3b8; }
+        .social-icons a:hover { color: white; transform: translateY(-3px); }
+
+        /* Footer */
+        footer { padding: 20px; text-align: center; color: #64748b; font-size: 12px; }
+
+        /* 动画 (Animations) */
+        @keyframes blink { 50% { border-color: transparent; } }
+        
+        /* 响应式设计 (Responsive) */
+        @media (max-width: 768px) {
+            .nav-links-desktop { display: none; }
+            .mobile-menu-btn { display: block; }
+            .hero-title { font-size: 2.5rem; }
+            .about-content { flex-direction: column; text-align: center; }
+            .skills-grid { justify-content: center; }
         }
     </style>
 </head>
-<body class="relative min-h-screen flex flex-col">
+<body>
 
-    <!-- 动态背景 Canvas -->
+    <!-- 1. 背景动画 Canvas -->
     <div id="canvas-container">
         <canvas id="neuro"></canvas>
     </div>
 
-    <!-- 导航栏 -->
-    <nav class="fixed w-full z-50 glass-card border-b border-slate-700/50 transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="#" class="text-2xl font-bold font-mono text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400 hover:scale-105 transition-transform">
-                        &lt;ZLKam /&gt;
-                    </a>
-                </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#home" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">首页</a>
-                        <a href="#about" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">关于我</a>
-                        <!-- 暂时隐藏项目链接，或者指向Coming Soon区域 -->
-                        <a href="#projects" class="hover:text-cyan-400 px-3 py-2 rounded-md text-sm font-medium transition-colors">学习进度</a>
-                        <a href="#contact" class="px-4 py-2 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 hover:bg-cyan-500 hover:text-white transition-all duration-300 text-sm font-medium">联系我</a>
-                    </div>
-                </div>
-                <!-- 移动端菜单按钮 -->
-                <div class="-mr-2 flex md:hidden">
-                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-slate-700 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-btn">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
+    <!-- 2. 导航栏 (Navbar) -->
+    <nav class="navbar glass-card">
+        <div class="container nav-content">
+            <!-- Logo 和 统计 -->
+            <div class="flex-center" style="gap: 15px;">
+                <a href="#" class="logo neon-text">&lt;ZLKam /&gt;</a>
+                <!-- 访问量 -->
+                <div class="glass-card flex-center" style="padding: 2px 8px; font-size: 10px; opacity: 0.7;">
+                    <i class="fas fa-eye" style="color: var(--accent-color); margin-right: 4px;"></i>
+                    <span id="busuanzi_container_site_pv" style="display:none">
+                        <span id="busuanzi_value_site_pv">...</span>
+                    </span>
                 </div>
             </div>
-        </div>
-        <!-- 移动端菜单面板 -->
-        <div class="md:hidden hidden glass-card border-t border-slate-700" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#home" class="hover:text-cyan-400 block px-3 py-2 rounded-md text-base font-medium">首页</a>
-                <a href="#about" class="hover:text-cyan-400 block px-3 py-2 rounded-md text-base font-medium">关于我</a>
-                <a href="#projects" class="hover:text-cyan-400 block px-3 py-2 rounded-md text-base font-medium">学习进度</a>
-                <a href="#contact" class="hover:text-cyan-400 block px-3 py-2 rounded-md text-base font-medium">联系我</a>
+
+            <!-- 桌面端菜单 -->
+            <div class="nav-links-desktop">
+                <a href="#home" class="nav-link" data-i18n="nav_home">Home</a>
+                <a href="#about" class="nav-link" data-i18n="nav_about">About</a>
+                <a href="#projects" class="nav-link" data-i18n="nav_projects">Portfolio</a>
+                
+                <!-- 语言下拉菜单 -->
+                <div class="lang-dropdown">
+                    <button id="lang-btn-desktop" class="nav-link flex-center">
+                        <i class="fas fa-globe" style="margin-right: 5px;"></i>
+                        <span id="desktop-lang-label">EN</span>
+                        <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i>
+                    </button>
+                    <div id="lang-menu-desktop" class="lang-menu hidden">
+                        <button class="lang-option" onclick="setLanguage('en')">English</button>
+                        <button class="lang-option" onclick="setLanguage('zh')">中文</button>
+                    </div>
+                </div>
+
+                <a href="#contact" class="btn btn-outline" style="padding: 6px 16px;" data-i18n="nav_contact">Contact</a>
+            </div>
+
+            <!-- 移动端按钮区域 -->
+            <div class="mobile-menu-btn flex-center" style="gap: 15px;">
+                <!-- 移动端语言按钮 -->
+                <div class="lang-dropdown">
+                    <button id="lang-btn-mobile">
+                        <i class="fas fa-globe"></i>
+                    </button>
+                    <div id="lang-menu-mobile" class="lang-menu hidden" style="right: -10px;">
+                        <button class="lang-option" onclick="setLanguage('en')">English</button>
+                        <button class="lang-option" onclick="setLanguage('zh')">中文</button>
+                    </div>
+                </div>
+                
+                <button id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section (首页) -->
-    <section id="home" class="flex-grow flex items-center justify-center pt-20 min-h-screen relative overflow-hidden">
-        <!-- 背景光晕装饰 -->
-        <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-500/20 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
-        <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-cyan-500/20 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+    <!-- 移动端菜单面板 -->
+    <div id="mobile-menu" class="mobile-menu-panel hidden">
+        <a href="#home" data-i18n="nav_home">Home</a>
+        <a href="#about" data-i18n="nav_about">About</a>
+        <a href="#projects" data-i18n="nav_projects">Portfolio</a>
+        <a href="#contact" data-i18n="nav_contact">Contact</a>
+    </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div class="inline-block mb-4 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700 text-xs text-cyan-300 font-mono">
-                正在 Unity 的世界里探索
-            </div>
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
-                你好, 我是 <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500 neon-text">ZLKam</span>
+    <!-- 3. 首页 (Hero Section) -->
+    <section id="home" class="hero-section">
+        <div class="container text-center">
+            <span class="hero-badge text-mono" data-i18n="hero_badge">Aspiring Game Developer</span>
+            
+            <h1 class="hero-title">
+                <span data-i18n="hero_greeting">Hello, I am</span> 
+                <span class="neon-text">ZLKam</span>
             </h1>
-            <!-- 打字机效果容器 -->
-            <div class="h-8 md:h-12 mb-8">
-                <span id="typewriter" class="text-xl md:text-3xl text-slate-400 font-mono border-r-2 border-cyan-400 pr-1 animate-pulse"></span>
+
+            <div class="typewriter-container text-mono">
+                <span id="typewriter"></span>
             </div>
             
-            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-                <a href="https://github.com/ZLKam/ZLKam" target="_blank" class="px-8 py-3 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold hover:shadow-lg hover:shadow-cyan-500/30 transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2">
-                    <i class="fab fa-github"></i> 访问 GitHub
+            <div class="hero-buttons">
+                <a href="https://github.com/ZLKam/ZLKam" target="_blank" class="btn btn-primary">
+                    <i class="fab fa-github"></i> <span data-i18n="hero_btn_github">Visit GitHub</span>
                 </a>
-                <a href="#contact" class="px-8 py-3 rounded-lg glass-card text-white font-bold hover:bg-slate-700/50 border border-slate-600 transform hover:-translate-y-1 transition-all duration-300">
-                    联系方式
+                <a href="#contact" class="btn btn-outline" style="color: white; border-color: white;" data-i18n="hero_btn_contact">
+                    Contact Me
                 </a>
             </div>
         </div>
         
-        <!-- 向下滚动提示 -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <a href="#about" class="text-slate-400 hover:text-white transition-colors">
-                <i class="fas fa-chevron-down text-2xl"></i>
+        <!-- 向下滚动箭头 -->
+        <div style="position: absolute; bottom: 30px; animation: bounce 2s infinite;">
+            <a href="#about" style="color: #64748b; font-size: 24px;">
+                <i class="fas fa-chevron-down"></i>
             </a>
         </div>
     </section>
 
-    <!-- About Section (关于) -->
-    <section id="about" class="py-20 bg-slate-900/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <!-- 头像区域 -->
-                <div class="w-full md:w-1/3 flex justify-center">
-                    <div class="relative w-64 h-64 group">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-cyan-400 to-purple-500 rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-300 opacity-70 blur-lg"></div>
-                        <div class="relative w-full h-full glass-card rounded-2xl flex items-center justify-center overflow-hidden border border-slate-600">
-                            <img src="https://github.com/ZLKam.png" alt="ZLKam Avatar" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://via.placeholder.com/300x300/0f172a/38bdf8?text=ZLKam'">
-                        </div>
-                    </div>
+    <!-- 4. 关于我 (About Section) -->
+    <section id="about" class="about-section">
+        <div class="container about-content">
+            <div class="avatar-wrapper">
+                <div class="avatar-box glass-card">
+                    <img src="https://github.com/ZLKam.png" alt="ZLKam Avatar" onerror="this.src='https://via.placeholder.com/300x300/0f172a/38bdf8?text=ZLKam'">
                 </div>
-                
-                <div class="w-full md:w-2/3">
-                    <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
-                        <span class="text-cyan-400">01.</span> 关于我
-                    </h2>
-                    <div class="glass-card p-8 rounded-2xl">
-                        <p class="text-slate-300 leading-relaxed mb-4 text-lg">
-                            你好！我是一名 Unity 游戏开发的初学者。虽然我才刚刚起步，但我对创造交互式体验充满了热情。
-                        </p>
-                        <p class="text-slate-300 leading-relaxed mb-6">
-                            目前，我正专注于学习 C# 编程语言和 Unity 引擎的核心机制。我深知从零开始的不易，但我享受每一次解决 Bug 和实现新功能的成就感。我期待能在这个领域不断成长，结识更多志同道合的朋友。
-                        </p>
-                        
-                        <h3 class="font-mono text-sm text-cyan-400 mb-4">正在学习的技能:</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-                                <i class="fab fa-unity"></i> Unity Engine
-                            </div>
-                            <div class="flex items-center gap-2 text-slate-400 hover:text-purple-400 transition-colors">
-                                <i class="fas fa-code"></i> C#
-                            </div>
-                            <div class="flex items-center gap-2 text-slate-400 hover:text-orange-500 transition-colors">
-                                <i class="fab fa-git-alt"></i> Git
-                            </div>
-                            <div class="flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors">
-                                <i class="fas fa-cube"></i> Game Design
-                            </div>
-                        </div>
+            </div>
+            
+            <div class="about-text">
+                <h2 class="section-title">
+                    <span class="section-number">01.</span> 
+                    <span data-i18n="about_title">About Me</span>
+                </h2>
+                <div class="glass-card" style="padding: 30px;">
+                    <p style="margin-bottom: 20px; line-height: 1.6; color: #cbd5e1;" data-i18n="about_p1">
+                        Hello! I am a passionate Unity Developer eager to launch my career in the game industry. I focus on creating immersive and interactive gameplay experiences.
+                    </p>
+                    <p style="margin-bottom: 25px; line-height: 1.6; color: #cbd5e1;" data-i18n="about_p2">
+                        With a solid foundation in C# and Unity's core mechanics, I am actively building projects to refine my skills. I thrive on solving technical challenges and implementing creative game logic.
+                    </p>
+                    
+                    <h3 class="text-mono" style="color: var(--accent-color); font-size: 14px; margin-bottom: 15px;" data-i18n="skills_title">Technical Skills:</h3>
+                    
+                    <div class="skills-grid text-mono">
+                        <div class="skill-item"><i class="fab fa-unity"></i> Unity Engine</div>
+                        <div class="skill-item"><i class="fas fa-code"></i> C# Language</div>
+                        <div class="skill-item"><i class="fab fa-git-alt"></i> Git Version Control</div>
+                        <div class="skill-item"><i class="fas fa-cube"></i> Game Design</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Projects Section (项目 - 暂时空缺状态) -->
-    <section id="projects" class="py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold mb-12 flex items-center gap-3">
-                <span class="text-cyan-400">02.</span> 项目与练习
+    <!-- 5. 项目 (Projects Section) -->
+    <section id="projects" class="projects-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="section-number">02.</span> 
+                <span data-i18n="projects_title">Selected Projects</span>
             </h2>
             
-            <div class="glass-card rounded-xl p-12 text-center border-dashed border-2 border-slate-700">
-                <div class="mb-6 inline-block p-4 rounded-full bg-slate-800 text-cyan-400">
-                    <i class="fas fa-hammer text-4xl animate-pulse"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white mb-4">正在打磨中...</h3>
-                <p class="text-slate-400 max-w-2xl mx-auto mb-8">
-                    我目前正在进行一些基础的游戏原型练习。为了呈现最好的效果，精选项目板块还在建设中。
-                    <br>请稍后回来查看我的第一个游戏作品！
+            <div class="glass-card placeholder-box">
+                <i class="fas fa-hammer working-icon"></i>
+                <h3 style="font-size: 24px; margin-bottom: 15px;" data-i18n="project_card_title">Developing Next-Gen Games</h3>
+                <p style="color: #94a3b8; max-width: 600px; margin: 0 auto 30px;" data-i18n="project_card_desc">
+                    I am currently working on advanced game prototypes to showcase my capabilities. Check out my GitHub to see my code quality and development progress.
                 </p>
-                <a href="https://github.com/ZLKam?tab=repositories" target="_blank" class="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-sm">
-                    <i class="fab fa-github"></i> 在 GitHub 上查看我的学习代码
+                <a href="https://github.com/ZLKam?tab=repositories" target="_blank" class="btn btn-outline" style="border-radius: 50px;">
+                    <i class="fab fa-github"></i> <span data-i18n="project_link">View my repositories on GitHub</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section (联系) -->
-    <section id="contact" class="py-20 bg-gradient-to-t from-black to-slate-900/0">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-8">
-                <span class="text-cyan-400">03.</span> 保持联系
+    <!-- 6. 联系 (Contact Section) -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title" style="justify-content: center;">
+                <span class="section-number" style="font-size: 1.2rem;">03.</span> 
+                <span data-i18n="contact_step" style="font-size: 1.2rem;">What's Next?</span>
             </h2>
-            <h3 class="text-4xl md:text-5xl font-bold text-white mb-6">Let's Connect</h3>
-            <p class="text-slate-400 text-lg mb-10 max-w-2xl mx-auto">
-                如果您对游戏开发有任何建议，或者愿意指导一名新人，非常欢迎与我联系！
+            <h3 style="font-size: 3rem; margin: 20px 0;" data-i18n="contact_title">Let's Connect</h3>
+            <p style="color: #94a3b8; max-width: 600px; margin: 0 auto;" data-i18n="contact_desc">
+                I am currently seeking internship opportunities where I can contribute and grow. Feel free to reach out!
             </p>
             
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
-                <a href="mailto:tonykam920@gmail.com" class="flex items-center gap-2 px-8 py-4 rounded border border-cyan-400 text-cyan-400 font-mono hover:bg-cyan-400/10 transition-colors">
+            <div class="contact-links">
+                <a href="mailto:tonykam920@gmail.com" class="btn btn-outline">
                     <i class="fas fa-envelope"></i> tonykam920@gmail.com
                 </a>
-                <a href="https://wa.me/6590477763" target="_blank" class="flex items-center gap-2 px-8 py-4 rounded border border-green-500 text-green-500 font-mono hover:bg-green-500/10 transition-colors">
+                <a href="https://wa.me/6590477763" target="_blank" class="btn btn-outline" style="border-color: #22c55e; color: #22c55e;">
                     <i class="fab fa-whatsapp"></i> WhatsApp
                 </a>
             </div>
             
-            <!-- 社交链接 -->
-            <div class="flex justify-center gap-8 text-2xl">
-                <a href="https://github.com/ZLKam" target="_blank" class="text-slate-400 hover:text-white hover:-translate-y-1 transition-all" title="GitHub">
-                    <i class="fab fa-github"></i>
-                </a>
-                <a href="https://www.linkedin.com/in/zilekam/" target="_blank" class="text-slate-400 hover:text-blue-600 hover:-translate-y-1 transition-all" title="LinkedIn">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section (联系) -->
-    <section id="contact" class="py-20 bg-gradient-to-t from-black to-slate-900/0">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-8">
-                <span class="text-cyan-400">03.</span> 下一步?
-            </h2>
-            <h3 class="text-4xl md:text-5xl font-bold text-white mb-6">保持联系</h3>
-            <p class="text-slate-400 text-lg mb-10 max-w-2xl mx-auto">
-                虽然我目前可能不处于求职状态，但我的收件箱永远开放。无论是想讨论技术、合作项目，还是仅仅打个招呼，我都会尽力回复！
-            </p>
-            <a href="mailto:your-email@example.com" class="inline-block px-8 py-4 rounded border border-cyan-400 text-cyan-400 font-mono hover:bg-cyan-400/10 transition-colors">
-                Say Hello
-            </a>
-            
-            <!-- 社交链接 -->
-            <div class="mt-16 flex justify-center gap-8 text-2xl">
-                <a href="https://github.com/ZLKam" class="text-slate-400 hover:text-white hover:-translate-y-1 transition-all"><i class="fab fa-github"></i></a>
-                <a href="#" class="text-slate-400 hover:text-blue-400 hover:-translate-y-1 transition-all"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-slate-400 hover:text-blue-600 hover:-translate-y-1 transition-all"><i class="fab fa-linkedin"></i></a>
+            <div class="social-icons">
+                <a href="https://github.com/ZLKam" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/zilekam/" target="_blank"><i class="fab fa-linkedin"></i></a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-6 text-center text-slate-600 text-sm font-mono">
-        <p>Designed & Built by ZLKam</p>
-        <p class="mt-1">&copy; 2024 All rights reserved.</p>
+    <footer>
+        <p data-i18n="footer_text">Designed & Built by ZLKam</p>
+        <p>&copy; 2024 All rights reserved.</p>
     </footer>
 
-    <!-- Scripts -->
-    <script>
-        // 1. 移动端菜单切换
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
+    <!-- 脚本引用 -->
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-        btn.addEventListener('click', () => {
+    <!-- 逻辑脚本 -->
+    <script>
+        // --- 1. 国际化 (i18n) 数据 ---
+        const translations = {
+            "en": {
+                "nav_home": "Home",
+                "nav_about": "About",
+                "nav_projects": "Portfolio",
+                "nav_contact": "Contact",
+                "hero_badge": "Aspiring Game Developer",
+                "hero_greeting": "Hello, I am",
+                "hero_btn_github": "Visit GitHub",
+                "hero_btn_contact": "Contact Me",
+                "about_title": "About Me",
+                "about_p1": "Hello! I am a passionate Unity Developer eager to launch my career in the game industry. I focus on creating immersive and interactive gameplay experiences.",
+                "about_p2": "With a solid foundation in C# and Unity's core mechanics, I am actively building projects to refine my skills. I thrive on solving technical challenges and implementing creative game logic.",
+                "skills_title": "Technical Skills:",
+                "projects_title": "Selected Projects",
+                "project_card_title": "Developing Next-Gen Games",
+                "project_card_desc": "I am currently working on advanced game prototypes to showcase my capabilities. Check out my GitHub to see my code quality and development progress.",
+                "project_link": "View my repositories on GitHub",
+                "contact_step": "What's Next?",
+                "contact_title": "Let's Connect",
+                "contact_desc": "I am currently seeking internship opportunities where I can contribute and grow. Feel free to reach out!",
+                "footer_text": "Designed & Built by ZLKam"
+            },
+            "zh": {
+                "nav_home": "首页",
+                "nav_about": "关于我",
+                "nav_projects": "项目展示",
+                "nav_contact": "联系我",
+                "hero_badge": "充满热情的游戏开发者",
+                "hero_greeting": "你好, 我是",
+                "hero_btn_github": "访问 GitHub",
+                "hero_btn_contact": "联系方式",
+                "about_title": "关于我",
+                "about_p1": "你好！我是一名充满热情的 Unity 开发者，致力于投身游戏行业。我专注于创造沉浸式且互动性强的游戏体验。",
+                "about_p2": "凭借扎实的 C# 和 Unity 核心机制基础，我正通过构建实际项目来磨练技能。我热衷于解决技术挑战并实现充满创意的游戏逻辑。",
+                "skills_title": "技术栈:",
+                "projects_title": "项目展示",
+                "project_card_title": "正在开发新一代游戏",
+                "project_card_desc": "我目前正在开发进阶游戏原型以展示我的开发能力。欢迎访问我的 GitHub 查看代码质量和开发进度。",
+                "project_link": "在 GitHub 查看我的仓库",
+                "contact_step": "保持联系",
+                "contact_title": "保持联系",
+                "contact_desc": "我目前正在寻找实习机会，希望能为团队贡献力量并共同成长。欢迎联系我！",
+                "footer_text": "Designed & Built by ZLKam"
+            }
+        };
+
+        const typewriterTexts = {
+            "en": ["Unity Developer", "Gameplay Programmer", "Creative Coder"],
+            "zh": ["Unity 开发者", "游戏逻辑程序员", "创意编程者"]
+        };
+
+        // --- 2. 核心逻辑 ---
+        let currentLang = localStorage.getItem('site_lang') || 'en';
+        // 安全检查：如果本地存储的语言不支持，回退到英语
+        if (!typewriterTexts[currentLang]) currentLang = 'en';
+
+        // 更新页面文字
+        function updateContent() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.innerHTML = translations[currentLang][key];
+                }
+            });
+            
+            // 更新当前语言标签
+            const label = document.getElementById('desktop-lang-label');
+            if(label) label.textContent = currentLang === 'en' ? 'EN' : '中';
+
+            // 重置打字机
+            texts = typewriterTexts[currentLang];
+            count = 0; index = 0;
+            
+            localStorage.setItem('site_lang', currentLang);
+            document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh-CN';
+        }
+
+        // 切换语言
+        function setLanguage(lang) {
+            currentLang = lang;
+            updateContent();
+            closeMenus();
+        }
+
+        // 菜单控制
+        function closeMenus() {
+            document.getElementById('lang-menu-desktop').classList.add('hidden');
+            document.getElementById('lang-menu-mobile').classList.add('hidden');
+        }
+
+        document.getElementById('lang-btn-desktop').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const menu = document.getElementById('lang-menu-desktop');
             menu.classList.toggle('hidden');
         });
 
-        // 2. 打字机效果 (修改文字)
-        const texts = ["Unity Beginner", "Game Dev Learner", "C# Student"];
-        let count = 0;
-        let index = 0;
-        let currentText = "";
-        let letter = "";
+        document.getElementById('lang-btn-mobile').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const menu = document.getElementById('lang-menu-mobile');
+            menu.classList.toggle('hidden');
+        });
+
+        // 移动端汉堡菜单
+        document.getElementById('mobile-menu-toggle').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // 点击空白处关闭菜单
+        document.addEventListener('click', () => {
+            closeMenus();
+        });
+
+        // --- 3. 打字机动画 ---
+        let texts = typewriterTexts[currentLang];
+        let count = 0, index = 0, currentText = "", letter = "";
 
         (function type() {
-            if (count === texts.length) {
+            // 安全检查：如果文本数组为空，使用默认英语
+            if (!texts || texts.length === 0) {
+                 texts = typewriterTexts['en'];
+            }
+
+            if (count >= texts.length) {
                 count = 0;
             }
+            
             currentText = texts[count];
+
+            // 再次安全检查：确保 currentText 存在
+            if (typeof currentText === 'undefined') {
+                currentText = "";
+            }
+
             letter = currentText.slice(0, ++index);
 
-            document.getElementById('typewriter').textContent = letter;
-            if (letter.length === currentText.length) {
-                setTimeout(() => {
-                    // Backspace effect logic could be added here, 
-                    // but simple loop is cleaner for now
-                    count++;
-                    index = 0;
-                }, 2000); // Wait 2s before next word
-            }
-            setTimeout(type, 150); // Typing speed
-        }());
+            const el = document.getElementById('typewriter');
+            if(el) el.textContent = letter;
 
-        // 3. Canvas 粒子连线背景动画
+            if (letter.length === currentText.length) {
+                // 单词打完后，等待 2 秒再开始下一个
+                setTimeout(() => { 
+                    count++; 
+                    index = 0; 
+                    type(); // 递归调用移到这里
+                }, 2000);
+            } else {
+                // 单词没打完，继续打字
+                setTimeout(type, 150);
+            }
+        })();
+
+        // --- 4. Canvas 背景动画 ---
         const canvas = document.getElementById("neuro");
         const ctx = canvas.getContext("2d");
-        
-        // 设置Canvas尺寸
         let width, height;
+
         function resize() {
             width = window.innerWidth;
             height = window.innerHeight;
@@ -353,11 +694,7 @@
         window.onresize = resize;
         resize();
 
-        // 粒子配置
         const particles = [];
-        const particleCount = window.innerWidth < 768 ? 40 : 80; // 移动端减少粒子数
-        const connectionDistance = 150;
-
         class Particle {
             constructor() {
                 this.x = Math.random() * width;
@@ -365,75 +702,49 @@
                 this.vx = (Math.random() - 0.5) * 0.5;
                 this.vy = (Math.random() - 0.5) * 0.5;
                 this.size = Math.random() * 2 + 1;
-                this.color = `rgba(56, 189, 248, ${Math.random() * 0.5 + 0.1})`; // Cyan with random alpha
             }
-
             update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                // 边界反弹
+                this.x += this.vx; this.y += this.vy;
                 if (this.x < 0 || this.x > width) this.vx *= -1;
                 if (this.y < 0 || this.y > height) this.vy *= -1;
             }
-
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
+                ctx.fillStyle = `rgba(56, 189, 248, ${Math.random() * 0.5 + 0.1})`;
                 ctx.fill();
             }
         }
+        for (let i = 0; i < (window.innerWidth < 768 ? 40 : 80); i++) particles.push(new Particle());
 
-        // 初始化粒子
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
-
-        // 鼠标交互
         let mouse = { x: null, y: null };
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
-        });
-        window.addEventListener('mouseout', () => {
-            mouse.x = null;
-            mouse.y = null;
-        });
+        window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
 
         function animate() {
             ctx.clearRect(0, 0, width, height);
-            
-            particles.forEach((p, index) => {
+            particles.forEach((p, i) => {
                 p.update();
                 p.draw();
-
-                // 粒子之间的连线
-                for (let j = index; j < particles.length; j++) {
-                    const p2 = particles[j];
-                    const dx = p.x - p2.x;
-                    const dy = p.y - p2.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < connectionDistance) {
+                // 粒子连线
+                for (let j = i; j < particles.length; j++) {
+                    const dx = p.x - particles[j].x, dy = p.y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 150) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(56, 189, 248, ${1 - distance / connectionDistance})`;
-                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${1 - dist/150})`;
                         ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
                         ctx.stroke();
                     }
                 }
-
-                // 鼠标与粒子的连线
-                if (mouse.x != null) {
-                    const dx = p.x - mouse.x;
-                    const dy = p.y - mouse.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 200) {
+                // 鼠标连线
+                if (mouse.x) {
+                    const dx = p.x - mouse.x, dy = p.y - mouse.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 200) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(129, 140, 248, ${1 - distance / 200})`; // Purple tint
-                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = `rgba(129, 140, 248, ${1 - dist/200})`;
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(mouse.x, mouse.y);
                         ctx.stroke();
@@ -443,6 +754,9 @@
             requestAnimationFrame(animate);
         }
         animate();
+
+        // 初始化
+        updateContent();
     </script>
 </body>
 </html>
